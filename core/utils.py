@@ -7,3 +7,7 @@ BLU = "\x1b[34m"
 PUR = "\x1b[35m"
 CYA = "\x1b[36m"
 WARN = "\x1b[5;31m"
+
+
+def log(log_string) :
+    pass

@@ -11,14 +11,13 @@ def initConsole() :
 # console mode handler
 class BinvInterpreter() :
 
-    global_help = BLU +                                     \
+    global_help = \
     '''
-Commands :
-    help                                Print this help menu
-    scan                                Scan a ELF file
-    exit                                Exit BinV
-    '''                                                     \
-    + RST
+avaliable commands:
+  help                  print this help menu
+  scan [elf ...]        scan ELF files
+  exit                  exit BinV
+    '''
 
     def __init__(self) :
         self.global_commands = ['help', 'scan', 'exit']
