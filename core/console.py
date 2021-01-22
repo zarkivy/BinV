@@ -1,24 +1,31 @@
 from .__info__ import __logo__
 from .utils import *
+from .engine import *
+
+# console mode entry
+def initConsole() :
+    binv_interpreter = BinvInterpreter()
+    binv_interpreter.loopMain()
 
 
 # console mode handler
 class BinvInterpreter() :
 
-    global_help = __logo__ +                                \
-    BLU +                                                   \
+    global_help = BLU +                                     \
     '''
 Commands :
     help                                Print this help menu
     scan                                Scan a ELF file
+    exit                                Exit BinV
     '''                                                     \
     + RST
 
     def __init__(self) :
-        self.global_commands = ['help', 'scan']
+        self.global_commands = ['help', 'scan', 'exit']
 
     # console main loop
-    def mainLoop(self) :
+    def loopMain(self) :
+        print(__logo__)
         print(self.global_help)
         while True :
             try :
@@ -27,20 +34,21 @@ Commands :
                 handleCommand = self.getCommandHandler(command)
                 handleCommand(args)
             except EOFError :
-                print(ORA + "Exit console mode ..." + RST)
+                print("\n" + ORA + "Exit console mode ..." + RST)
                 break
             except KeyboardInterrupt :
-                print(ORA + "Keyboard interrupt ..." + RST)
+                print("\n" + ORA + "Keyboard interrupt ..." + RST)
                 break
 
     # the prompt as new command line's header
     @property
     def line_prompt(self) :
-        return PUR + "BinV" + RST + " >>> "
+        return PUR + ">>> " + RST
 
     # parse a line of string into command & args
     def parseCommandLine(self, command_line) :
-        return "help", " "
+        argv_list = command_line.split(" ")
+        return argv_list[0], argv_list[1:]
 
     # get the corresponding command
     def getCommandHandler(self, command) :
@@ -54,7 +62,10 @@ Commands :
 
     # command handlers :
     def handleHelpCommand(self, args) :
-        print("[HELP]\n")
+        binvHelp(args)
 
     def handleScanCommand(self, args) :
-        print("[SCAN]\n")
+        binvScan(args)
+
+    def handleExitCommand(self, args) :
+        exit()

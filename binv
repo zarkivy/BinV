@@ -1,8 +1,6 @@
 #!env python
 
-import sys
 from core import *
 
 if __name__ == '__main__' :
-    binv_interpreter = console.BinvInterpreter()
-    sys.exit(binv_interpreter.mainLoop())
+    main()

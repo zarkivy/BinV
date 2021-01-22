@@ -10,4 +10,4 @@ __________.__     ____   ____
         \/        \/
 ```
 
-Yet another binary vulnerbilities checker
+> Yet another binary vulnerbilities checker

@@ -1,12 +1,15 @@
+from .utils import *
+
 __title__ = 'BinV'
 __description__ = 'Yet another binary vulnerbilities checker'
+__version__ = '0.1'
 __url__ = 'https://github.com/IZAY01/BinV'
 __author__ = 'IZAY01'
-__logo__ = "\x1b[35m" + r'''
+__logo__ = PUR + R'''
 __________.__     ____   ____
 \______   \__| ___\   \ /   /
  |    |  _/  |/    \   Y   /
  |    |   \  |   |  \     /
  |______  /__|___|  /\___/
-        \/        \/
-''' + "\x1b[0m"
+        \/        \/         -v{version}
+'''.format(version=__version__) + RST
