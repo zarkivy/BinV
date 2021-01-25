@@ -1,6 +1,6 @@
 from .scanner import *
 from .utils import *
-import vul_rules
+from .vul_rules import *
 import re
 
 
@@ -17,10 +17,12 @@ def binvScan(args) :
     if not re.match(r"^-\d+$", args[0]) :
         log("Usage : -<rules>", ORA)
         return
+    else : 
+        rules_string = args[0]
+        
     for file_name in args[1:] :
         log("Analysing '{}'".format(file_name), CYA)
-        rules_string, file_name = args[0], args[1:]
-        rules = vul_rules.getVulRules(rules_string)
+        rules = getVulRules(rules_string)
         scanner = Scanner(rules, file_name)
         scanner.doScan()
 
