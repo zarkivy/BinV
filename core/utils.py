@@ -1,3 +1,6 @@
+import time
+
+
 # ANSI fonts
 RST = "\x1b[0m"
 RED = "\x1b[31m"
@@ -9,5 +12,5 @@ CYA = "\x1b[36m"
 WARN = "\x1b[5;31m"
 
 
-def log(log_string) :
-    pass
+def log(log_string, color) :
+    print("{}[ {} ] {}".format(color, time.asctime().split(' ')[-2], log_string) + RST)
