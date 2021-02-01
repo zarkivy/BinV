@@ -1,4 +1,4 @@
-from . import console, arguments
+from . import arguments
 
 def main() :
     arguments.parseArgs()

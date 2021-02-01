@@ -1,6 +1,6 @@
 from .__info__ import __logo__
-from .utils import *
-from .engine import *
+from .utils import log, PUR, GRE, GRA, RED, ORA, RST
+from .engine import binvHelp, binvScan, binvManu
 
 # console mode entry
 def initConsole() :
@@ -42,7 +42,7 @@ avaliable commands:
     # the prompt as new command line's header
     @property
     def line_prompt(self) :
-        return PUR + ">>> " + RST
+        return GRA + ">>> " + RST
 
     # parse a line of string into command & args
     def parseCommandLine(self, command_line) :

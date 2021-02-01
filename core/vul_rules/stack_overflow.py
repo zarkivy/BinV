@@ -1,9 +1,8 @@
-from ..utils import *
+from ..utils import log, RED, GRE
 import angr
 
 
 def check(file_name) :
-    #project = angr.Project(file_name, load_options={'auto_load_libs':False})
     log("Checking SOF", GRE)
 
     project = angr.Project(file_name)
