@@ -12,7 +12,7 @@ __________.__     ____   ____
 
 > Yet another binary vulnerbilities checker
 
-![demo](/home/izayoi/Gitrepo/BinV/doc/img/demo.png)
+![demo](https://raw.githubusercontent.com/IZAY01/BinV/main/doc/img/demo.png)
 
 ### Introduction
 
