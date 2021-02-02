@@ -3,7 +3,7 @@ import angr
 
 
 def check(file_name) :
-    log("Checking { Stack Overflow }", GRE)
+    log("Checking STACK OVERFLOW", GRE)
 
     try :
         project = angr.Project(file_name)
@@ -18,7 +18,7 @@ def check(file_name) :
 
     if simulation.unconstrained :
         for unconstrained_state in simulation.unconstrained :
-            log("SOF detected! payload :", RED)
+            log("STACK OVERFLOW detected! payload :", RED)
             print("{}< payload >{}\n".format(DRED, RST), unconstrained_state.posix.dumps(0))
 
     print()

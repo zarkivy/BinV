@@ -33,7 +33,7 @@ class FreeHook(angr.procedures.libc.free.free) :
 
 
 def check(file_name) :
-    log("Checking { Double Free }", GRE)
+    log("Checking DOUBLE FREE", GRE)
 
     try :
         project = angr.Project(file_name)
