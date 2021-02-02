@@ -33,9 +33,13 @@ class FreeHook(angr.procedures.libc.free.free) :
 
 
 def check(file_name) :
-    log("Checking DF", GRE)
+    log("Checking { Double Free }", GRE)
 
-    project = angr.Project(file_name)
+    try :
+        project = angr.Project(file_name)
+    except :
+        log("Not a valid binary file: " + file_name + "\n", RED)
+        return
     project.hook_symbol('malloc', MallocHook(cc=project.factory.cc(func_ty="void* malloc(int)")), replace=True)
     project.hook_symbol('free', FreeHook(cc=project.factory.cc(func_ty="void free(void*)")), replace=True)
     extra_option = {sim_options.REVERSE_MEMORY_NAME_MAP, sim_options.TRACK_ACTION_HISTORY, sim_options.ZERO_FILL_UNCONSTRAINED_MEMORY}
@@ -44,3 +48,5 @@ def check(file_name) :
 
     while simgr.active :
         simgr.step()
+    
+    print()

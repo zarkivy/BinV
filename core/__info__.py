@@ -1,8 +1,8 @@
-from .utils import *
+from .utils import PUR, RST
 
 __title__ = 'BinV'
 __description__ = 'Yet another binary vulnerbilities checker'
-__version__ = '0.1'
+__version__ = '0.2'
 __url__ = 'https://github.com/IZAY01/BinV'
 __author__ = 'IZAY01'
 __logo__ = PUR + R'''

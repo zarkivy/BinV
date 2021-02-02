@@ -1,11 +1,15 @@
-from ..utils import log, RED, GRE
+from ..utils import log, RED, GRE, DRED, RST
 import angr
 
 
 def check(file_name) :
-    log("Checking SOF", GRE)
+    log("Checking { Stack Overflow }", GRE)
 
-    project = angr.Project(file_name)
+    try :
+        project = angr.Project(file_name)
+    except :
+        log("Not a valid binary file: " + file_name + "\n", RED)
+        return
     state = project.factory.entry_state()
     simulation = project.factory.simulation_manager(state, save_unconstrained=True)
 
@@ -14,4 +18,7 @@ def check(file_name) :
 
     if simulation.unconstrained :
         for unconstrained_state in simulation.unconstrained :
-            log("SOF detected! payload = \n{}".format(unconstrained_state.posix.dumps(0)), RED)
+            log("SOF detected! payload :", RED)
+            print("{}< payload >{}\n".format(DRED, RST), unconstrained_state.posix.dumps(0))
+
+    print()

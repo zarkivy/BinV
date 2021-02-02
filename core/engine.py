@@ -1,29 +1,37 @@
-from .scanner import *
-from .utils import *
-from .vul_rules import *
+from .scanner import Scanner
+from .utils import log, RED, CYA, ORA, GRA, LGRE, RST
+from .vul_rules import getVulRules
+from shutil import get_terminal_size
 import re
 
 
-def binvHelp(args) :
-    print("[HELP]")
+def binvShow() :
+    log("< SHOW >", GRA)
 
 
-def binvManu(args) :
-    pass
+def binvManu() :
+    log("< MANU >", GRA)
 
 
 # the entry of option-scan
-def binvScan(args) :
-    if not re.match(r"^-\d+$", args[0]) :
-        log("Usage : -<rules>", ORA)
+def binvScan(targets, rules) :
+    # check subarg-rules' format
+    if not re.match(r"^\d+$", rules) :
+        log("Rules format: ^\\d+$", RED)
         return
-    else : 
-        rules_string = args[0]
-        
-    for file_name in args[1:] :
-        log("Analysing '{}'".format(file_name), CYA)
-        rules = getVulRules(rules_string)
-        scanner = Scanner(rules, file_name)
-        scanner.doScan()
+    else :
+        rules = getVulRules(rules)
+
+    try :
+        # check vulnerabilities for each elf file
+        for file_name in targets :
+            print(LGRE + "="*get_terminal_size().columns + RST, end="")
+            log("Analysing '{}'\n".format(file_name), CYA)
+            scanner = Scanner(rules, file_name)
+            scanner.doScan()
+    except KeyboardInterrupt :
+        print("\r")
+        log("Keyboard interrupt", ORA)
+        exit()
 
 

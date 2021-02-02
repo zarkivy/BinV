@@ -1,6 +1,3 @@
-# BinV
-
-
 ```
 __________.__     ____   ____
 \______   \__| ___\   \ /   /
@@ -12,7 +9,7 @@ __________.__     ____   ____
 
 > Yet another binary vulnerbilities checker
 
-![demo](https://raw.githubusercontent.com/IZAY01/BinV/main/doc/img/demo.png)
+![demo](https://raw.githubusercontent.com/IZAY01/BinV/main/docs/img/demo.png)
 
 ### Introduction
 
@@ -22,5 +19,5 @@ __________.__     ____   ____
 
 ### Schedule
 
-- Currently can handle **stack overflow** (with out cannay), and **double free**
+- Currently can handle **stack overflow** (without cannay), and **double free**.
 - Just focusing on features implementation at present, performance issues will be handled after that (considering using CFG analysis to improve symbolic execution's efficiency).
