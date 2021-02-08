@@ -21,3 +21,4 @@ __________.__     ____   ____
 
 - Currently can handle **stack overflow** (without cannay), and **double free**.
 - Just focusing on features implementation at present, performance issues will be handled after that (considering using CFG analysis to improve symbolic execution's efficiency).
+- Focusing on this recently ...

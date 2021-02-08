@@ -5,7 +5,7 @@ char bss[0x10]={0};
 int main(int argc, char const *argv[])
 {
     char buf[0x10]={0};
-    int times=4;
+    int times=3;
     unsigned long *ptr=&bss;
     while(times--)
     {

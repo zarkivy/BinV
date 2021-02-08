@@ -3,6 +3,11 @@ import angr
 from angr import sim_options
 
 
+'''
+class malloc(angr.SimProcedure):
+    def run(self, sim_size):
+        return self.state.heap._malloc(sim_size)
+'''
 class MallocHook(angr.procedures.libc.malloc.malloc) :
     def run(self, sim_size) :
         malloc_addr = self.state.heap._malloc(sim_size)
@@ -14,7 +19,11 @@ class MallocHook(angr.procedures.libc.malloc.malloc) :
         self.state.globals["MALLOC_LIST"][malloc_addr] = malloc_size
         return malloc_addr
 
-
+'''
+class free(angr.SimProcedure):
+    def run(self, ptr):
+        self.state.heap._free(ptr)
+'''
 class FreeHook(angr.procedures.libc.free.free) :
     def run(self, ptr) :
         free_addr = self.state.solver.eval(ptr)
