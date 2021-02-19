@@ -5,7 +5,7 @@ def judgeDfFind(state) -> bool :
 
 # prune unconcerned address got from CFG, [ Prune ]
 def judgeDfAvoid(state) -> bool :
-
+    # 环状路径且无写入操作
 
 
 def pruneRepeatPath() :
@@ -23,7 +23,7 @@ def prioritizeMallocFreePath() :
     s.explore(find=malloc_addr, avoid=free_addr, num_find=1, find_stash="malloc")
     s.explore(stash="malloc", find=free_addr, find_stash="malloc_free")
     s.explore(stash="malloc_free", find=free_addr, find_stash="malloc_free_free")
-    s.explore(stash="malloc_free_free")
+    s.run(stash="malloc_free_free")
     s.run(stash="malloc_free")
     s.run(stash="malloc")
     s.run(stash="active")

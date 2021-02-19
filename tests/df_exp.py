@@ -27,7 +27,7 @@ def log(log_string, color) :
 
 
 '''
-class malloc(angr.simprocedure):
+class malloc(angr.SimProcedure):
     def run(self, sim_size):
         return self.state.heap._malloc(sim_size)
 '''
@@ -36,10 +36,10 @@ class MallocHook(angr.procedures.libc.malloc.malloc) :
         malloc_addr = self.state.heap._malloc(sim_size)
         malloc_size = self.state.solver.eval(sim_size)
         # init the malloc list for current execution path
-        if "malloc_list" not in self.state.globals :
-            self.state.globals["malloc_list"] = {}
+        if "MALLOC_LIST" not in self.state.globals :
+            self.state.globals["MALLOC_LIST"] = {}
         # record a new malloc-call into the malloc list
-        self.state.globals["malloc_list"][malloc_addr] = malloc_size
+        self.state.globals["MALLOC_LIST"][malloc_addr] = malloc_size
         return malloc_addr
 
 '''
@@ -92,12 +92,12 @@ def check(file_name) :
     simmgr.explore(stash="malloc_free_stash", find=free_plt, find_stash="malloc_free_free_stash")
     log("RUN 1", GRE)
     simmgr.explore(stash="malloc_free_free_stash")
-    # log("RUN 2", GRE)
-    # simmgr.explore(stash="malloc_free_stash")
-    # log("RUN 3", GRE)
-    # simmgr.explore(stash="malloc_stash")
-    # log("RUN 4", GRE)
-    # simmgr.explore(stash="active")
+    log("RUN 2", GRE)
+    simmgr.explore(stash="malloc_free_stash")
+    log("RUN 3", GRE)
+    simmgr.explore(stash="malloc_stash")
+    log("RUN 4", GRE)
+    simmgr.explore(stash="active")
 
 
 
