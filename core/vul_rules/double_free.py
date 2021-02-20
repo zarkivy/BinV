@@ -1,4 +1,5 @@
 from ..utils import log, RED, GRE, DRED, RST
+from ..prune_algorithms import checkPathSimilarity
 import angr
 from angr import sim_options
 
@@ -37,8 +38,10 @@ class FreeHook(angr.procedures.libc.free.free) :
             if ("MALLOC_LIST" in self.state.globals) and (free_addr in self.state.globals["MALLOC_LIST"]) :
                 self.state.globals["FREE_LIST"][free_addr] = self.state.globals["MALLOC_LIST"][free_addr]
         else :
-            # if free address is already in free list, alert DOUBLE FREE
-            if free_addr in self.state.globals["FREE_LIST"] :
+            # if free address is already in free list, alert DOUBLE FREE 
+            # and is a new path containning bug          
+            if free_addr in self.state.globals["FREE_LIST"] \
+               and not checkPathSimilarity([bbl_addr for bbl_addr in self.state.history.bbl_addrs], paths_with_bug) :
                 log("DOUBLE FREE detected! IO dump :", RED)
                 print("{}< stdin >{}\n".format(DRED, RST), self.state.posix.dumps(0))
                 print("{}< stdout >{}\n".format(DRED, RST), self.state.posix.dumps(1))
