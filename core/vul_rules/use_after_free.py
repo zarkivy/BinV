@@ -66,10 +66,12 @@ def checkUAF(cur_state: angr.SimState) :
             if (act.type == 'mem') \
                and (act.action == 'read' or act.action == 'write') :
                 for free_addr in cur_state.globals["FREE_LIST"] :
-                    if free_addr == act.actual_addrs[0] :
-                        log("USE AFTER FREE detected! IO dump :", RED)
-                        print("{}< stdin >{}\n".format(DRED, RST), cur_state.posix.dumps(0))
-                        print("{}< stdout >{}\n".format(DRED, RST), cur_state.posix.dumps(1))
+                    if free_addr == act.actual_addrs[0] \
+                       and not checkPathSimilarity([bbl_addr for bbl_addr in cur_state.history.bbl_addrs], paths_with_bug) :
+                            log("USE AFTER FREE detected! IO dump :", RED)
+                            print("{}< stdin >{}\n".format(DRED, RST), cur_state.posix.dumps(0))
+                            print("{}< stdout >{}\n".format(DRED, RST), cur_state.posix.dumps(1))
+                            paths_with_bug.append([bbl_addr for bbl_addr in cur_state.history.bbl_addrs])
 
 
 

@@ -4,7 +4,7 @@ def checkPathSimilarity(cur_path, paths_set) -> bool :
     for path in paths_set :
         if isSubPath(cur_path.copy(), path.copy()) :
             return True
-        elif getInterProp(cur_path.copy(), path.copy()) > 0.8 :
+        elif getInterProp(cur_path.copy(), path.copy()) > 0.85 :
             return True
     return False
 
