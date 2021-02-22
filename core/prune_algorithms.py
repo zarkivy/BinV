@@ -27,7 +27,7 @@ def getInterProp(sub_path, sup_path) -> float :
             return 1
         if node == sub_path[-1] :
             sub_path.pop()
-    log("Repeated bug-path, similarity :{}".format( (sub_path_len - len(sub_path) / sub_path_len) ), ORA)
+    log("Repeated bug-path, similarity: {}".format( (sub_path_len - len(sub_path)) / sub_path_len ), ORA)
     return (sub_path_len - len(sub_path)) / sub_path_len
 
 # 有序数组子串

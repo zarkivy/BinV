@@ -50,7 +50,7 @@ class FreeHook(angr.procedures.libc.free.free) :
         return self.state.heap._free(ptr)
 
 
-def check(file_name) :
+def check(file_name: str) :
     log("Checking DOUBLE FREE", GRE)
 
     try :
