@@ -2,7 +2,9 @@ from ..utils import log, RED, GRE, DRED, RST
 from ..prune_algorithms import checkPathSimilarity
 import angr
 from angr import sim_options
+import logging
 
+logging.getLogger('angr').setLevel('DEBUG')
 
 paths_with_bug = []
 
@@ -71,9 +73,10 @@ def check(file_name: str) :
 
     extra_option = {sim_options.REVERSE_MEMORY_NAME_MAP, 
                     sim_options.TRACK_ACTION_HISTORY, 
-                    sim_options.ZERO_FILL_UNCONSTRAINED_MEMORY}
-    state = project.factory.entry_state(add_options=extra_option)
-    simgr = project.factory.simulation_manager(state, save_unconstrained=True)
+                    sim_options.ZERO_FILL_UNCONSTRAINED_MEMORY,
+                    sim_options.ZERO_FILL_UNCONSTRAINED_REGISTERS}
+    init_state = project.factory.entry_state(add_options=extra_option)
+    simgr = project.factory.simulation_manager(init_state, save_unconstrained=True)
 
     simgr_m_f = simgr.copy(deep=True)
 
@@ -83,25 +86,8 @@ def check(file_name: str) :
     simgr_m_f.explore(stash="OP_malloc", find=free_plt, find_stash="OP_malloc_free")
 
     # quick scan
-    log("RUN 1", GRE)
     simgr_m_f.run(stash="OP_malloc_free")
-    log("RUN 2", GRE)
     simgr_m.run(stash="OP_malloc")
     # full scan
-    log("RUN 3", GRE)
     while simgr.active :
         simgr.step()
-
-    # while simgr.OP_malloc_free :
-    #     for mf_state in simgr.OP_malloc_free :
-    #         mf_state.step()
-
-    
-    # while simgr.OP_malloc :
-    #     for m_state in simgr.OP_malloc :
-    #         m_state.step()
-
-    # while simgr.active :
-    #     simgr.step()
-
-    log("DONE!", GRE)

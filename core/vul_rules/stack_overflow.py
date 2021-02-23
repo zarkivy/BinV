@@ -10,14 +10,14 @@ def check(file_name) :
     except :
         log("Not a valid binary file: " + file_name + "\n", RED)
         return
-    state = project.factory.entry_state()
-    simulation = project.factory.simulation_manager(state, save_unconstrained=True)
+    init_state = project.factory.entry_state()
+    simgr = project.factory.simulation_manager(init_state, save_unconstrained=True)
 
-    while simulation.active :
-        simulation.step()
+    while simgr.active :
+        simgr.step()
 
-    if simulation.unconstrained :
-        for unconstrained_state in simulation.unconstrained :
+    if simgr.unconstrained :
+        for unconstrained_state in simgr.unconstrained :
             log("STACK OVERFLOW detected! payload :", RED)
             print("{}< payload >{}\n".format(DRED, RST), unconstrained_state.posix.dumps(0))
 

@@ -1,4 +1,4 @@
-from ..utils import *
+from ..utils import log, GRE
 import angr
 
 

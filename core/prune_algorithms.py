@@ -1,14 +1,19 @@
 from .utils import log, ORA
 
-def checkPathSimilarity(cur_path, paths_set, ratio = 0.85) -> bool :
+def checkPathSimilarity(cur_path, paths_set, ratio=0.85) -> bool :
     for path in paths_set :
         if isSubPath(cur_path.copy(), path.copy()) :
+            # skip sub-path 
             return True
-        elif getInterProp(cur_path.copy(), path.copy()) > ratio :
-            return True
+        else :
+            prop = getInterProp(cur_path.copy(), path.copy())
+            if prop > ratio :
+                # skip similar path and report it
+                log("Repeated bug-path, similarity: {}".format(prop), ORA)
+                return True
     return False
 
-
+# 判断是否是'有序数组子串'，是'有序交集占比计算'的子集
 def isSubPath(sub_path, sup_path) -> bool :
     sub_path.reverse()
     for node in sup_path :
@@ -18,7 +23,7 @@ def isSubPath(sub_path, sup_path) -> bool :
             sub_path.pop()
     return False
 
-
+# 计算'有序交集占比'
 def getInterProp(sub_path, sup_path) -> float :
     sub_path_len = len(sub_path)
     sub_path.reverse()
@@ -27,14 +32,9 @@ def getInterProp(sub_path, sup_path) -> float :
             return 1
         if node == sub_path[-1] :
             sub_path.pop()
-    log("Repeated bug-path, similarity: {}".format( (sub_path_len - len(sub_path)) / sub_path_len ), ORA)
     return (sub_path_len - len(sub_path)) / sub_path_len
 
 
+# optimization for double free
 def pruneLoopPath() :
     pass
-
-# 有序数组子串
-#子集 报 True 可信
-#超集 误报少
-# 有序交集占比

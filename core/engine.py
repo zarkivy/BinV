@@ -25,7 +25,7 @@ def binvScan(targets, rules) :
     try :
         # check vulnerabilities for each elf file
         for file_name in targets :
-            print(LGRE + "="*get_terminal_size().columns + RST, end="")
+            print("="*get_terminal_size().columns, end="")
             log("Analysing '{}'\n".format(file_name), CYA)
             scanner = Scanner(rules, file_name)
             scanner.doScan()
