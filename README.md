@@ -7,18 +7,32 @@ __________.__     ____   ____
         \/        \/
 ```
 
+> 来自车间流水线的二进制漏洞扫描器
+>
 > Yet another binary vulnerbilities checker
 
+
+
+## Introduction
+
+- 这个项目是我在北京理工大学的本科毕业设计。试着基于**符号执行**，实现针对于 ELF 的自动化漏洞扫描器。
+- 基于 **[Angr 9.0](https://github.com/angr/angr)** 实现，于近期持续开发中。
+- This project is my undergraduate graduation project in Beijing Institute of Technology. Try to implement an automated vulnerability scanner for ELF based on **symbolic execution**.
+- Implemented based on **[Angr 9.0](https://github.com/angr/angr)**, continues to be developed recently.
+
+
+
+## Schedule
+
+- 目前已实现对于 **stack overflow、double free、use after free** 漏洞类型的检测功能。
+- 实现了简单的路径优化与剪枝策略，提升了检测效率，减少了对于重复路径的误报。
+- 下一步计划添加对于 *无内存写入操作的环路* 的冗余路径的剪枝方案，同时使用 CTF 赛题进行测试。
+- Currently, the detection for **stack overflow, double free, and use after free** vulnerability types have been implemented.
+- A simple path optimization and pruning strategy is implemented, which improves detection efficiency and reduces false alarms for repeated paths.
+- The next step is to add a pruning scheme for the redundant path of the *loop path without memory write operation*, and use the CTF questions for testing.
+
+
+
+## Temporary demo
+
 ![demo](https://raw.githubusercontent.com/IZAY01/BinV/main/docs/img/demo.png)
-
-### Introduction
-
-- Based on **Angr 9.0**
-
-
-
-### Schedule
-
-- Currently can handle **stack overflow** (without cannay), and **double free**.
-- Just focusing on features implementation at present, performance issues will be handled after that (considering using CFG analysis to improve symbolic execution's efficiency).
-- Focusing on this recently ...

@@ -51,7 +51,7 @@ class FreeHook(angr.procedures.libc.free.free) :
         return self.state.heap._free(ptr)
 
 
-def checkUAF(cur_state: angr.SimState) :
+def checkUAF(cur_state: angr.SimState) -> None :
     # has not FREE yet
     if "FREE_LIST" not in cur_state.globals :
         cur_state.globals["ACTS_BEFORE_FREE"] = \
@@ -75,7 +75,7 @@ def checkUAF(cur_state: angr.SimState) :
 
 
 
-def check(file_name: str) :
+def check(file_name: str) -> None :
     log("Checking UAF", GRE)
 
     try :

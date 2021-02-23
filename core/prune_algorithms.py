@@ -1,10 +1,10 @@
 from .utils import log, ORA
 
-def checkPathSimilarity(cur_path, paths_set) -> bool :
+def checkPathSimilarity(cur_path, paths_set, ratio = 0.85) -> bool :
     for path in paths_set :
         if isSubPath(cur_path.copy(), path.copy()) :
             return True
-        elif getInterProp(cur_path.copy(), path.copy()) > 0.85 :
+        elif getInterProp(cur_path.copy(), path.copy()) > ratio :
             return True
     return False
 
@@ -29,6 +29,10 @@ def getInterProp(sub_path, sup_path) -> float :
             sub_path.pop()
     log("Repeated bug-path, similarity: {}".format( (sub_path_len - len(sub_path)) / sub_path_len ), ORA)
     return (sub_path_len - len(sub_path)) / sub_path_len
+
+
+def pruneLoopPath() :
+    pass
 
 # 有序数组子串
 #子集 报 True 可信
