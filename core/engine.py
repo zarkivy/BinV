@@ -1,12 +1,19 @@
 from .scanner import Scanner
-from .utils import log, RED, CYA, ORA, GRA, LGRE, RST
+from .utils import log, RED, CYA, ORA, GRA, RST
 from .vul_rules import getVulRules
 from shutil import get_terminal_size
 import re
 
 
 def binvShow() :
-    log("< SHOW >", GRA)
+    vul_rule_index = R'''
+    1 - double free
+    {}2 - format string bug [TODO]
+    3 - integer overflow  [TODO]{}
+    4 - stack overflow
+    5 - use after free
+    '''.format(GRA, RST)
+    print(vul_rule_index)
 
 
 def binvManu() :
@@ -29,6 +36,8 @@ def binvScan(targets, rules) :
             log("Analysing '{}'\n".format(file_name), CYA)
             scanner = Scanner(rules, file_name)
             scanner.doScan()
+        print()
+        log("DONE!", CYA)
     except KeyboardInterrupt :
         print("\r")
         log("Keyboard interrupt", ORA)
