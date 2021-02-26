@@ -14,6 +14,7 @@ class free(angr.SimProcedure):
     def run(self, ptr):
         self.state.heap._free(ptr)
 '''
+# TODO : whether mallocing a freed address is ignored by angr's procedure
 class FreeHook(angr.procedures.libc.free.free) :
     def run(self, ptr) :
         free_addr = self.state.solver.eval(ptr)
@@ -44,7 +45,7 @@ def checkUAF(cur_state: angr.SimState) -> None :
                        and not checkPathSimilarity([bbl_addr for bbl_addr in cur_state.history.bbl_addrs], paths_with_bug) :
                             log("USE AFTER FREE detected! IO dump :", RED)
                             print("{}< stdin >{}\n".format(DRED, RST), cur_state.posix.dumps(0))
-                            print("{}< stdout >{}\n".format(DRED, RST), cur_state.posix.dumps(1))
+                            print("{}< stdout >{}\n".format(DRED, RST), cur_state.posix.dumps(1).decode())
                             paths_with_bug.append([bbl_addr for bbl_addr in cur_state.history.bbl_addrs])
 
 
@@ -71,7 +72,9 @@ def check(file_name: str) -> None :
 
     # use dfs to search for vulnerabilities as quickly as possible instead of as comprehensively as possible
     # angr uses bfs by default
-    simgr.use_technique(angr.exploration_techniques.DFS())
+    # 经测试，对于无限循环的程序，DFS 基本不可用，因为其会深入探索一条无限长的执行路径而陷入死循环
+    # simgr.use_technique(angr.exploration_techniques.DFS())
+
     # use disk dump to reduce memory usage if it's necessary
     simgr.use_technique(angr.exploration_techniques.Spiller())
 

@@ -46,7 +46,7 @@ class FreeHook(angr.procedures.libc.free.free) :
                and not checkPathSimilarity([bbl_addr for bbl_addr in self.state.history.bbl_addrs], paths_with_bug) :
                 log("DOUBLE FREE detected! IO dump :", RED)
                 print("{}< stdin >{}\n".format(DRED, RST), self.state.posix.dumps(0))
-                print("{}< stdout >{}\n".format(DRED, RST), self.state.posix.dumps(1))
+                print("{}< stdout >{}\n".format(DRED, RST), self.state.posix.dumps(1).decode())
                 paths_with_bug.append([bbl_addr for bbl_addr in self.state.history.bbl_addrs])
         
         return self.state.heap._free(ptr)
@@ -91,3 +91,5 @@ def check(file_name: str) :
     # full scan
     while simgr.active :
         simgr.step()
+
+    # TODO: 循环程序的执行深度是无限的，故需要限定符号执行时间或执行深度

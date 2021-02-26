@@ -35,6 +35,14 @@ def getInterProp(sub_path, sup_path) -> float :
     return (sub_path_len - len(sub_path)) / sub_path_len
 
 
+
+# TODO below
+
 # optimization for double free
 def pruneLoopPath() :
+    pass
+
+
+# 当一个 state 经过的路径重复率达到某个值时，使用 move 将此 state 由 active 移动至 deadend，以达到剪枝效果
+def pruneRepreatPath() :
     pass
