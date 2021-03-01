@@ -1,4 +1,4 @@
-from . import arguments
+from .arguments import parseArgs
 
 def main() :
-    arguments.parseArgs()
+    parseArgs()

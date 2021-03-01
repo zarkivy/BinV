@@ -33,7 +33,7 @@ def parseArgs() :
     # scan
     if hasattr(args, "scan") :
         # check scan mode parameters' legality
-        if args.target == None or args.rule == None :
+        if (args.target is None) or (args.rule is None) :
             scan_parser.print_help()
             exit()
         # scan mode entry

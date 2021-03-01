@@ -13,8 +13,5 @@ def getVulRules(rules_string : str) -> list[str] :
         '4' : 'stack_overflow',
         '5' : 'use_after_free',
     }
-    rules_list = []
-    for rule_code in code_vul_dict.keys() :
-        if rule_code in rules_string :
-            rules_list.append(code_vul_dict[rule_code])
-    return rules_list
+    return [ code_vul_dict[rule_code]
+             for rule_code in rules_string ]

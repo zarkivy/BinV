@@ -1,5 +1,5 @@
-from ..utils import log, RED, GRE, DRED, RST
-from ..prune_algorithms import checkPathSimilarity
+from ..utils import log, RED, CYA, DRED, RST
+from ..prune_algorithms import isSimilarPath
 import angr
 from angr import sim_options
 import logging
@@ -43,7 +43,7 @@ class FreeHook(angr.procedures.libc.free.free) :
             # if free address is already in free list, alert DOUBLE FREE 
             # and is a new path containning bug          
             if free_addr in self.state.globals["FREE_LIST"] \
-               and not checkPathSimilarity([bbl_addr for bbl_addr in self.state.history.bbl_addrs], paths_with_bug) :
+               and not isSimilarPath([bbl_addr for bbl_addr in self.state.history.bbl_addrs], paths_with_bug) :
                 log("DOUBLE FREE detected! IO dump :", RED)
                 print("{}< stdin >{}\n".format(DRED, RST), self.state.posix.dumps(0))
                 print("{}< stdout >{}\n".format(DRED, RST), self.state.posix.dumps(1).decode())
@@ -53,7 +53,7 @@ class FreeHook(angr.procedures.libc.free.free) :
 
 
 def check(file_name: str) :
-    log("Checking DOUBLE FREE", GRE)
+    log("Checking DOUBLE FREE", CYA)
 
     try :
         project = angr.Project(file_name, load_options={'auto_load_libs': False})

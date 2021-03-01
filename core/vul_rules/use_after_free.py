@@ -1,5 +1,5 @@
-from ..utils import log, GRE, RED, DRED, RST
-from ..prune_algorithms import checkPathSimilarity
+from ..utils import log, CYA, RED, DRED, RST, BLU
+from ..prune_algorithms import isSimilarPath, getInterProp
 import angr
 from angr import sim_options
 import logging
@@ -26,37 +26,38 @@ class FreeHook(angr.procedures.libc.free.free) :
         return self.state.heap._free(ptr)
 
 
-def checkUAF(cur_state: angr.SimState) -> None :
+def checkUAF(cur_state: angr.SimState) :
     # has not FREE yet
     if "FREE_LIST" not in cur_state.globals :
         cur_state.globals["ACTS_BEFORE_FREE"] = \
             [ act for act in reversed(cur_state.history.actions.hardcopy) ]
     # after FREE occured
     else :
-        new_actions = [ act \
-                        for act in reversed(cur_state.history.actions.hardcopy) \
-                        if act not in cur_state.globals["ACTS_BEFORE_FREE"] \
-                      ]
+        new_actions = [ act 
+                        for act in reversed(cur_state.history.actions.hardcopy) 
+                        if act not in cur_state.globals["ACTS_BEFORE_FREE"] ]
         for act in new_actions :
             if (act.type == 'mem') \
-               and (act.action == 'read' or act.action == 'write') :
-                for free_addr in cur_state.globals["FREE_LIST"] :
-                    if free_addr == act.actual_addrs[0] \
-                       and not checkPathSimilarity([bbl_addr for bbl_addr in cur_state.history.bbl_addrs], paths_with_bug) :
-                            log("USE AFTER FREE detected! IO dump :", RED)
-                            print("{}< stdin >{}\n".format(DRED, RST), cur_state.posix.dumps(0))
-                            print("{}< stdout >{}\n".format(DRED, RST), cur_state.posix.dumps(1).decode())
-                            paths_with_bug.append([bbl_addr for bbl_addr in cur_state.history.bbl_addrs])
+               and (act.action == 'read' or act.action == 'write') \
+               and (act.actual_addrs[0] in cur_state.globals["FREE_LIST"]) :
+               # and not isSimilarPath([bbl_addr for bbl_addr in cur_state.history.bbl_addrs], paths_with_bug) :
+                log("USE AFTER FREE detected! IO dump :", RED)
+                print("{}< stdin >{}\n".format(DRED, RST), cur_state.posix.dumps(0))
+                print("{}< stdout >{}\n".format(DRED, RST), cur_state.posix.dumps(1).decode())
+                paths_with_bug.append([bbl_addr for bbl_addr in cur_state.history.bbl_addrs])
 
+
+def pruneRepeatPath(cur_state: angr.SimState) :
+    return isSimilarPath([bbl_addr for bbl_addr in cur_state.history.bbl_addrs], paths_with_bug, ratio=0.5)
 
 
 def check(file_name: str) -> None :
-    log("Checking UAF", GRE)
+    log("Checking USE AFTER FREE", CYA)
 
     try :
         project = angr.Project(file_name, load_options={'auto_load_libs': False})
     except :
-        log("Not a valid binary file: " + file_name + "\n", RED)
+        log("Not a valid binary file: " + file_name + "\n", DRED)
         return
 
     project.hook_symbol('free', 
@@ -76,9 +77,11 @@ def check(file_name: str) -> None :
     # simgr.use_technique(angr.exploration_techniques.DFS())
 
     # use disk dump to reduce memory usage if it's necessary
-    simgr.use_technique(angr.exploration_techniques.Spiller())
+    # simgr.use_technique(angr.exploration_techniques.Spiller())
 
     while simgr.active:
         for act_state in simgr.active:
             checkUAF(act_state)
+        # pruning
+        simgr.move(filter_func=pruneRepeatPath, from_stash='active', to_stash='deadend')
         simgr.step()

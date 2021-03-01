@@ -2,7 +2,7 @@ from .utils import PUR, RST
 
 __title__ = 'BinV'
 __description__ = 'Yet another binary vulnerbilities checker'
-__version__ = '0.5'
+__version__ = '0.7'
 __url__ = 'https://github.com/IZAY01/BinV'
 __author__ = 'IZAY01'
 __logo__ = PUR + R'''
