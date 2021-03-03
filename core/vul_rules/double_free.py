@@ -43,7 +43,7 @@ class FreeHook(angr.procedures.libc.free.free) :
             # if free address is already in free list, alert DOUBLE FREE 
             # and is a new path containning bug          
             if free_addr in self.state.globals["FREE_LIST"] \
-               and not isSimilarPath([bbl_addr for bbl_addr in self.state.history.bbl_addrs], paths_with_bug) :
+               and not isSimilarPath([bbl_addr for bbl_addr in self.state.history.bbl_addrs], paths_with_bug, ratio=0.9) :
                 log("DOUBLE FREE detected! IO dump :", RED)
                 print("{}< stdin >{}\n".format(DRED, RST), self.state.posix.dumps(0))
                 print("{}< stdout >{}\n".format(DRED, RST), self.state.posix.dumps(1).decode())
@@ -73,23 +73,20 @@ def check(file_name: str) :
 
     extra_option = {sim_options.REVERSE_MEMORY_NAME_MAP, 
                     sim_options.TRACK_ACTION_HISTORY, 
-                    sim_options.ZERO_FILL_UNCONSTRAINED_MEMORY,
-                    sim_options.ZERO_FILL_UNCONSTRAINED_REGISTERS}
+                    sim_options.SYMBOL_FILL_UNCONSTRAINED_MEMORY,
+                    sim_options.SYMBOL_FILL_UNCONSTRAINED_REGISTERS}
     init_state = project.factory.entry_state(add_options=extra_option)
     simgr = project.factory.simulation_manager(init_state, save_unconstrained=True)
 
-    simgr_m_f = simgr.copy(deep=True)
-
-    simgr_m_f.explore(find=malloc_plt, avoid=free_plt, num_find=1, find_stash="OP_malloc")
-    simgr_m = simgr_m_f.copy(deep=True)
-
-    simgr_m_f.explore(stash="OP_malloc", find=free_plt, find_stash="OP_malloc_free")
+    simgr_mf = simgr.copy(deep=True)
+    simgr_mf.explore(find=malloc_plt, avoid=free_plt, num_find=1, find_stash="OP_malloc")
+    simgr_mf.explore(stash="OP_malloc", find=free_plt, find_stash="OP_malloc_free")
 
     # quick scan
-    simgr_m_f.run(stash="OP_malloc_free")
-    simgr_m.run(stash="OP_malloc")
+    simgr_mf.run(stash="OP_malloc_free")
+
     # full scan
     while simgr.active :
         simgr.step()
 
-    # TODO: 循环程序的执行深度是无限的，故需要限定符号执行时间或执行深度
+    # TODO: 循环程序的执行深度是无限的，故需要限定符号执行时间或执行深度，或手动停止符号执行

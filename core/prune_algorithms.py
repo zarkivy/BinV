@@ -28,8 +28,7 @@ def getSimilarity(cur_path, paths_set) -> list[float] :
 
 # 计算'有序交集占比'
 def getInterProp(sub_path, sup_path) -> float :
-    sub_path_len = len(sub_path)
-    sup_path_len = len(sup_path)
+    sub_path_len, sup_path_len = len(sub_path), len(sup_path)
     for node in sup_path :
         if sub_path == [] :
             return 1

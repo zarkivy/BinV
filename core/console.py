@@ -89,6 +89,6 @@ def parseConsoleScanArgs(args):
     if '-t' not in args or '-r' not in args :
         return False, False
     if args[ len(args) - args[::-1].index('-t') : args.index('-r')] != [] :
-        return args[ len(args) - args[::-1].index('-t') : args.index('-r')], args[args.index('-r') + 1]
+        return args[len(args) - args[::-1].index('-t') : args.index('-r')], args[args.index('-r') + 1]
     if args[ len(args) - args[::-1].index('-r') : args.index('-t')] != [] :
         return args[args.index('-t') + 1 : ], args[args.index('-r') + 1]
