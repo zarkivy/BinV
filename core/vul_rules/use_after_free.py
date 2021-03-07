@@ -32,8 +32,7 @@ class FreeHook(angr.procedures.libc.free.free):
 def checkUAF(cur_state: angr.SimState):
     # has not FREE yet
     if "FREE_LIST" not in cur_state.globals:
-        cur_state.globals["ACTS_BEFORE_FREE"] = \
-            [act for act in reversed(cur_state.history.actions.hardcopy)]
+        cur_state.globals["ACTS_BEFORE_FREE"] = [act for act in reversed(cur_state.history.actions.hardcopy)]
     # after FREE occured
     else:
         new_actions = [act
@@ -41,16 +40,13 @@ def checkUAF(cur_state: angr.SimState):
                        if act not in cur_state.globals["ACTS_BEFORE_FREE"]]
         for act in new_actions:
             if (act.type == 'mem') \
-                    and (act.action == 'read' or act.action == 'write') \
-                    and (act.actual_addrs[0] in cur_state.globals["FREE_LIST"]) \
-                    and not isSimilarPath([bbl_addr for bbl_addr in cur_state.history.bbl_addrs], paths_with_bug, ratio=0.95):
+            and (act.action == 'read' or act.action == 'write') \
+            and (act.actual_addrs[0] in cur_state.globals["FREE_LIST"]) \
+            and not isSimilarPath([bbl_addr for bbl_addr in cur_state.history.bbl_addrs], paths_with_bug, ratio=0.95):
                 log("USE AFTER FREE detected! IO dump :", RED)
-                print("{}< stdin >{}\n".format(
-                    DRED, RST), cur_state.posix.dumps(0))
-                print("{}< stdout >{}\n".format(DRED, RST),
-                      cur_state.posix.dumps(1).decode())
-                paths_with_bug.append(
-                    [bbl_addr for bbl_addr in cur_state.history.bbl_addrs])
+                print("{}< stdin >{}\n".format(DRED, RST), cur_state.posix.dumps(0))
+                print("{}< stdout >{}\n".format(DRED, RST),cur_state.posix.dumps(1).decode())
+                paths_with_bug.append([bbl_addr for bbl_addr in cur_state.history.bbl_addrs])
 
 
 def checkRepeatPath(cur_state: angr.SimState):
@@ -70,17 +66,15 @@ def check(file_name: str):
         log("Not a valid binary file: " + file_name + "\n", DRED)
         return
 
-    project.analyses.CFG()
-
     if not hasHeapFunc({func_item.name
-                        for func_item in project.kb.functions.values()
-                        if func_item.name in HEAP_FUNC}):
+                        for func_item in project.loader.symbols
+                        if func_item.is_import
+                        and func_item.name in HEAP_FUNC}):
         log("PASS", CYA)
         return
 
     project.hook_symbol('free',
-                        FreeHook(cc=project.factory.cc(
-                            func_ty="void free(void*)")),
+                        FreeHook(cc=project.factory.cc(func_ty="void free(void*)")),
                         replace=True)
 
     extra_option = {sim_options.REVERSE_MEMORY_NAME_MAP,
@@ -88,8 +82,7 @@ def check(file_name: str):
                     sim_options.ZERO_FILL_UNCONSTRAINED_MEMORY,
                     sim_options.ZERO_FILL_UNCONSTRAINED_REGISTERS}
     init_state = project.factory.entry_state(add_options=extra_option)
-    simgr = project.factory.simulation_manager(
-        init_state, veritesting=True, save_unconstrained=True)
+    simgr = project.factory.simulation_manager(init_state, veritesting=True, save_unconstrained=True)
 
     # use dfs to search for vulnerabilities as quickly as possible instead of as comprehensively as possible
     # angr uses bfs by default
@@ -98,6 +91,7 @@ def check(file_name: str):
 
     # use disk dump to reduce memory usage if it's necessary
     # simgr.use_technique(angr.exploration_techniques.Spiller())
+    # Spiller has bugs in handling some test cases, TURN OFF HERE
 
     while simgr.active:
         for act_state in simgr.active:
