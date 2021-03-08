@@ -26,10 +26,10 @@ __________.__     ____   ____
 
 - 目前已实现对于 **stack overflow、double free、use after free** 漏洞类型的检测功能。
 - 实现了简单的路径优化与剪枝策略，提升了检测效率，减少了对于重复路径的误报。
-- 下一步计划添加对于 *无内存写入操作的环路* 的冗余路径的剪枝方案，同时使用 CTF 赛题进行测试。
+- 正在撰写论文初稿，同时试图找到预先静态分析的优化方案。
 - Currently, the detection for **stack overflow, double free, and use after free** vulnerability types have been implemented.
 - A simple path optimization and pruning strategy is implemented, which improves detection efficiency and reduces false alarms for repeated paths.
-- The next step is to add a pruning scheme for the redundant path of the *loop path without memory write operation*, and use the CTF questions for testing.
+- The first draft of the paper is being written, and at the same time, I am trying to find an optimal solution for pre-static analysis.
 
 
 
