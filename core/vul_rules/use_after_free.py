@@ -66,6 +66,8 @@ def check(file_name: str):
         log("Not a valid binary file: " + file_name + "\n", DRED)
         return
 
+    cfg = project.analyses.CFGFast(normalize=True)
+
     if not hasHeapFunc({func_item.name
                         for func_item in project.loader.symbols
                         if func_item.is_import
@@ -92,6 +94,12 @@ def check(file_name: str):
     # use disk dump to reduce memory usage if it's necessary
     # simgr.use_technique(angr.exploration_techniques.Spiller())
     # Spiller has bugs in handling some test cases, TURN OFF HERE
+
+    # limit loop counts for activating DFS, but it seems that angt has some bugs on it ...
+    # simgr.use_technique(angr.exploration_techniques.LoopSeer(cfg=cfg, bound=10))
+    # simgr.use_technique(angr.exploration_techniques.LengthLimiter(max_length=999, drop=True))
+
+    # BinV will crash if uncomment any of the above
 
     while simgr.active:
         for act_state in simgr.active:
