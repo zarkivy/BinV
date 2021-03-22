@@ -58,7 +58,7 @@ def check(file_name: str) :
     try :
         project = angr.Project(file_name, load_options={'auto_load_libs': False})
     except :
-        log("Not a valid binary file: " + file_name + "\n", RED)
+        log("Path does not point to a valid binary file: " + file_name + "\n", RED)
         return
 
     project.analyses.CFG()

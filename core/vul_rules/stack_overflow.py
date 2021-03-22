@@ -1,14 +1,14 @@
-from ..utils import log, RED, GRE, DRED, RST
+from ..utils import log, RED, CYA, DRED, RST
 import angr
 
 
 def check(file_name) :
-    log("Checking STACK OVERFLOW", GRE)
+    log("Checking STACK OVERFLOW", CYA)
 
     try :
         project = angr.Project(file_name)
     except :
-        log("Not a valid binary file: " + file_name + "\n", RED)
+        log("Path does not point to a valid binary file: " + file_name + "\n", DRED)
         return
     init_state = project.factory.entry_state()
     simgr = project.factory.simulation_manager(init_state, save_unconstrained=True)

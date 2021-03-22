@@ -10,14 +10,13 @@ logging.getLogger('angr').setLevel('FATAL')
 paths_with_bug = []
 
 
+# TODO : whether mallocing a freed address is ignored by angr's procedure
+
 '''
 class free(angr.SimProcedure):
     def run(self, ptr):
         self.state.heap._free(ptr)
 '''
-# TODO : whether mallocing a freed address is ignored by angr's procedure
-
-
 class FreeHook(angr.procedures.libc.free.free):
     def run(self, ptr):
         free_addr = self.state.solver.eval(ptr)
@@ -63,7 +62,7 @@ def check(file_name: str):
     try:
         project = angr.Project(file_name, load_options={'auto_load_libs': False})
     except:
-        log("Not a valid binary file: " + file_name + "\n", DRED)
+        log("Path does not point to a valid binary file: " + file_name + "\n", DRED)
         return
 
     cfg = project.analyses.CFGFast(normalize=True)
@@ -81,8 +80,7 @@ def check(file_name: str):
 
     extra_option = {sim_options.REVERSE_MEMORY_NAME_MAP,
                     sim_options.TRACK_ACTION_HISTORY,
-                    sim_options.ZERO_FILL_UNCONSTRAINED_MEMORY,
-                    sim_options.ZERO_FILL_UNCONSTRAINED_REGISTERS}
+                    sim_options.ZERO_FILL_UNCONSTRAINED_MEMORY}
     init_state = project.factory.entry_state(add_options=extra_option)
     simgr = project.factory.simulation_manager(init_state, veritesting=True, save_unconstrained=True)
 
@@ -90,13 +88,13 @@ def check(file_name: str):
     # angr uses bfs by default
     # 经测试，对于无限循环的程序，DFS 基本不可用，因为其会深入探索一条无限长的执行路径而陷入死循环
     # simgr.use_technique(angr.exploration_techniques.DFS())
+    # limit loop counts for activating DFS, but it seems that angr has some bugs on it ...
+    # simgr.use_technique(angr.exploration_techniques.LoopSeer(cfg=cfg, bound=10))
 
     # use disk dump to reduce memory usage if it's necessary
     # simgr.use_technique(angr.exploration_techniques.Spiller())
     # Spiller has bugs in handling some test cases, TURN OFF HERE
 
-    # limit loop counts for activating DFS, but it seems that angt has some bugs on it ...
-    # simgr.use_technique(angr.exploration_techniques.LoopSeer(cfg=cfg, bound=10))
     # simgr.use_technique(angr.exploration_techniques.LengthLimiter(max_length=999, drop=True))
 
     # BinV will crash if uncomment any of the above

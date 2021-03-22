@@ -24,10 +24,10 @@ __________.__     ____   ____
 
 ## Schedule
 
-- 目前已实现对于 **stack overflow、double free、use after free** 漏洞类型的检测功能。
+- 目前已实现对于 **stack overflow(draft)、format string bug(draft)、double free、use after free(with some bugs)** 漏洞类型的检测功能。
 - 实现了简单的路径优化与剪枝策略，提升了检测效率，减少了对于重复路径的误报。
 - 正在撰写论文初稿，同时试图找到预先静态分析的优化方案。
-- Currently, the detection for **stack overflow, double free, and use after free** vulnerability types have been implemented.
+- Currently, the detection for **stack overflow(draft)、format string bug(draft)、double free、use after free(with some bugs)** vulnerability types have been implemented.
 - A simple path optimization and pruning strategy is implemented, which improves detection efficiency and reduces false alarms for repeated paths.
 - The first draft of the paper is being written, and at the same time, I am trying to find an optimal solution for pre-static analysis.
 
