@@ -65,7 +65,7 @@ def check(file_name: str):
         log("Path does not point to a valid binary file: " + file_name + "\n", DRED)
         return
 
-    cfg = project.analyses.CFGFast(normalize=True)
+    project.analyses.CFGFast(normalize=True)
 
     if not hasHeapFunc({func_item.name
                         for func_item in project.loader.symbols
@@ -86,6 +86,7 @@ def check(file_name: str):
 
     # use dfs to search for vulnerabilities as quickly as possible instead of as comprehensively as possible
     # angr uses bfs by default
+    # TODO : add DFS or BFS selection feature, already in paper!
     # 经测试，对于无限循环的程序，DFS 基本不可用，因为其会深入探索一条无限长的执行路径而陷入死循环
     # simgr.use_technique(angr.exploration_techniques.DFS())
     # limit loop counts for activating DFS, but it seems that angr has some bugs on it ...

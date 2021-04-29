@@ -2,6 +2,7 @@ from ..utils import log, CYA, RED, DRED
 import angr
 from angr import sim_options
 from angr.procedures.stubs.format_parser import FormatParser
+from ..static_analysis import FMT_PRINT_FUNC
 
 
 bits = 128 # should be set to 32 or 64
@@ -29,7 +30,7 @@ class PrintfHook(angr.procedures.libc.printf.printf) :
 
             stdout.write_data(out_str, out_str.size() // 8)
             return out_str.size() // 8
-
+    
 
 def check(file_name) :
     log("Checking Format String Bug", CYA)
@@ -38,6 +39,13 @@ def check(file_name) :
         project = angr.Project(file_name, load_options={'auto_load_libs': False})
     except:
         log("Path does not point to a valid binary file: " + file_name + "\n", DRED)
+        return
+
+    if {func_item.name
+        for func_item in project.loader.symbols
+        if func_item.is_import
+        and func_item.name in FMT_PRINT_FUNC} == {}:
+        log("PASS", CYA)
         return
 
     global bits
