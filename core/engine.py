@@ -8,11 +8,10 @@ import re
 def binvShow() :
     print(R'''
     1 - double free
-    {}2 - format string bug [TODO]
-    3 - integer overflow  [TODO]{}
-    4 - stack overflow
-    5 - use after free
-    '''.format(GRA, RST))
+    2 - format string bug
+    3 - stack overflow
+    4 - use after free
+    ''')
 
 
 def binvManu() :
