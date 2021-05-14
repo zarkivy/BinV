@@ -1,6 +1,6 @@
 from ..utils import log, RED, CYA, DRED, RST
 from ..prune_algorithms import isSimilarPath
-import angr
+import angr, psutil, os
 from angr import sim_options
 import logging
 
@@ -47,6 +47,7 @@ class FreeHook(angr.procedures.libc.free.free) :
                 log("DOUBLE FREE detected! IO dump :", RED)
                 print("{}< stdin >{}\n".format(DRED, RST), self.state.posix.dumps(0))
                 print("{}< stdout >{}\n".format(DRED, RST), self.state.posix.dumps(1).decode())
+                print(u'\nmemory consumed：%.4f MB' % (psutil.Process(os.getpid()).memory_info().rss / 1024 / 1024) )
                 paths_with_bug.append([bbl_addr for bbl_addr in self.state.history.bbl_addrs])
         
         return self.state.heap._free(ptr)
@@ -77,8 +78,10 @@ def check(file_name: str) :
                     sim_options.SYMBOL_FILL_UNCONSTRAINED_REGISTERS}
     init_state = project.factory.entry_state(add_options=extra_option)
     simgr = project.factory.simulation_manager(init_state, save_unconstrained=True)
+    #simgr.use_technique(angr.exploration_techniques.DFS())
 
     simgr_mf = simgr.copy(deep=True)
+    #simgr_mf.use_technique(angr.exploration_techniques.DFS())
     simgr_mf.explore(find=malloc_plt, avoid=free_plt, num_find=1, find_stash="OP_malloc")
     simgr_mf.explore(stash="OP_malloc", find=free_plt, find_stash="OP_malloc_free")
 

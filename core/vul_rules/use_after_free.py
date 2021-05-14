@@ -1,7 +1,7 @@
 from ..utils import log, CYA, RED, DRED, RST
 from ..prune_algorithms import isSimilarPath, getInterProp
 from ..static_analysis import HEAP_FUNC
-import angr
+import angr, psutil, os
 from angr import sim_options
 import logging
 
@@ -45,6 +45,7 @@ def checkUAF(cur_state: angr.SimState):
                 log("USE AFTER FREE detected! IO dump :", RED)
                 print("{}< stdin >{}\n".format(DRED, RST), cur_state.posix.dumps(0))
                 print("{}< stdout >{}\n".format(DRED, RST),cur_state.posix.dumps(1).decode())
+                print(u'\nmemory consumed：%.4f MB' % (psutil.Process(os.getpid()).memory_info().rss / 1024 / 1024) )
                 paths_with_bug.append([bbl_addr for bbl_addr in cur_state.history.bbl_addrs])
 
 
