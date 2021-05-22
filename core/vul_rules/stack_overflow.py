@@ -8,6 +8,7 @@ def checkWriteStackMem(cur_state: angr.SimState):
         if (act.type == 'mem') \
         and (act.action == 'write') \
         and type(act.size.ast) == claripy.ast.bv.BV :
+        # TODO and act.addr in stack
             print("Write mem: {} : {} : {}".format(hex(act.actual_addrs[0]), act.size.ast, type(act.size.ast))) 
             return True
     return False
@@ -30,10 +31,10 @@ def check(file_name) :
 
     while simgr.active :
         simgr.move(filter_func=checkWriteStackMem,
-                   from_stash='active', to_stash='writed_stack')
-        if hasattr(simgr, 'writed_stack') :
-            while simgr.writed_stack :
-                simgr.step('writed_stack')
+                   from_stash='active', to_stash='symbolic_writed_stack')
+        if hasattr(simgr, 'symbolic_writed_stack') :
+            while simgr.symbolic_writed_stack :
+                simgr.step('symbolic_writed_stack')
                 if simgr.unconstrained :
                     for unconstrained_state in simgr.unconstrained :
                         log("STACK OVERFLOW detected! payload :", RED)
