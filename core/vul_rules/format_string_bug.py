@@ -1,4 +1,4 @@
-from ..utils import log, CYA, RED, DRED
+from ..utils import log, CYA, RED, DRED, RST
 import angr, psutil, os
 from angr import sim_options
 from angr.procedures.stubs.format_parser import FormatParser
