@@ -17,7 +17,7 @@ __________.__     ____   ____
 
 - 这个项目是我的本科毕业设计。试着基于**符号执行**，实现针对于 ELF 的自动化漏洞扫描器。
 - 基于 **[Angr 9.0](https://github.com/angr/angr)** 实现，于近期持续开发中。
-- This project is my undergraduate graduation project in Beijing Institute of Technology. Try to implement an automated vulnerability scanner for ELF based on **symbolic execution**.
+- This project is my undergraduate graduation project. Try to implement an automated vulnerability scanner for ELF based on **symbolic execution**.
 - Implemented based on **[Angr 9.0](https://github.com/angr/angr)**, continues to be developed recently.
 
 
